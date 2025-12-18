@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Resource/folha.css">
+    <title>Perfil</title>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">MiniProjeto</div>
+    <div class="links">
+        <a href="tarefas.html">Tarefas</a>
+        <a href="perfil.html" class="active">Perfil</a>
+        <button onclick="logout()" class="btn-logout">Sair</button>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="header">
+        <h2>Perfil do Usuário</h2>
+        <p class="subtitle">Confira seus dados e informações</p>
+    </div>
+
+    <div class="card perfil-info">
+        <p><strong>Nome:</strong> <span id="nome"></span></p>
+        <p><strong>Email:</strong> <span id="email"></span></p>
+
+        <div class="acoes">
+            <button onclick="window.location.href='tarefas.html'" class="btn-primary">⬅ Minhas Tarefas</button>
+        </div>
+    </div>
+</div>
+
+<script src="/Resource/script.js"></script>
+
+<script>
+const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+
+if (!usuario) {
+    window.location.href = "login.html";
+} else {
+    document.getElementById("nome").textContent = usuario.nome;
+    document.getElementById("email").textContent = usuario.email;
+}
+
+function logout() {
+    sessionStorage.clear();
+    window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>

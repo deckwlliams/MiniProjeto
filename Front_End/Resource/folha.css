@@ -1,0 +1,307 @@
+/* ===============================
+   🔹 RESET + VARIÁVEIS
+================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+:root {
+    --primary: #4169e1; /* azul royal */
+    --primary-dark: #27408b;
+    --background: #f4f6fb;
+    --white: #ffffff;
+    --gray: #6b7280;
+    --border: #e5e7eb;
+    --success: #22c55e;
+    --warning: #facc15;
+    --danger: #ef4444;
+    --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* ===============================
+    BODY
+================================ */
+body {
+    background: #dbe9ff;
+    color: #111827;
+    min-height: 100vh;
+}
+
+
+
+
+
+/* ===============================
+   NAVBAR
+================================ */
+.navbar {
+    background: var(--primary);
+    color: var(--white);
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+}
+
+.navbar .logo {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.navbar .links {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.navbar a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 500;
+    opacity: 0.85;
+}
+
+.navbar a.active,
+.navbar a:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+.btn-logout {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    color: var(--white);
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-logout:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ===============================
+   🔹 CONTAINER GERAL
+================================ */
+.container,
+.app-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 16px;
+}
+
+/* ===============================
+   🔹 HEADER DAS PÁGINAS
+================================ */
+.header,
+.page-header {
+    margin-bottom: 24px;
+}
+
+.header h2,
+.page-header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.subtitle {
+    color: var(--gray);
+    margin-top: 4px;
+}
+
+/* ===============================
+   🔹 CARD
+================================ */
+.card {
+    background: var(--white);
+    padding: 24px;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+}
+
+/* ===============================
+   🔹 FORMULÁRIOS
+================================ */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+label {
+    font-weight: 500;
+    color: var(--gray);
+}
+
+input,
+select {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 1rem;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+/* ===============================
+   🔹 BOTÕES
+================================ */
+button {
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.btn-primary,
+form button {
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.btn-primary:hover,
+form button:hover {
+    background: var(--primary-dark);
+}
+
+/* ===============================
+   🔹 LOGIN / CADASTRO
+================================ */
+.nav-link {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.95rem;
+}
+
+.nav-link a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* ===============================
+   🔹 PERFIL
+================================ */
+.perfil-info p {
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+}
+
+.acoes {
+    margin-top: 20px;
+}
+
+/* ===============================
+   🔹 FORM DE TAREFAS
+================================ */
+.task-form {
+    display: grid;
+    grid-template-columns: 1fr 160px 140px;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+/* ===============================
+   🔹 LISTA DE TAREFAS
+================================ */
+.task-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.task-list li {
+    background: var(--white);
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.task-list li span {
+    flex: 1;
+}
+
+/* ===============================
+   🔹 BOTÕES DE AÇÃO
+================================ */
+.task-list button {
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.task-list button:first-child {
+    background: var(--success);
+    color: var(--white);
+}
+
+.task-list button:last-child {
+    background: var(--danger);
+    color: var(--white);
+}
+
+/* ===============================
+   🔹 RESPONSIVIDADE
+================================ */
+@media (max-width: 768px) {
+
+    .navbar {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .task-form {
+        grid-template-columns: 1fr;
+    }
+
+    .task-list li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .task-list button {
+        width: 100%;
+    }
+}
+/* ===============================
+   🔹 PRIORIDADE DAS TAREFAS
+================================ */
+.badge {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+}
+
+.badge.BAIXA {
+    background-color: #22c55e; /* verde */
+}
+
+.badge.MEDIA {
+    background-color: #facc15; /* amarelo */
+    color: #111;
+}
+
+.badge.ALTA {
+    background-color: #ef4444; /* vermelho */
+}
