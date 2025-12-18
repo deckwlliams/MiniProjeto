@@ -1,163 +1,161 @@
-const API_URL = "http://localhost:8081/usuario";
+const API_URL = "http://localhost:8081";
 
-// 🔒 PROTEÇÃO DE ROTAS
-const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+document.addEventListener("DOMContentLoaded", () => {
 
-const paginasPublicas = ["login.html", "cadastro.html"];
+    /* =======================
+       🔒 PROTEÇÃO DE ROTAS
+    ======================= */
+    const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+    const paginaAtual = location.pathname.toLowerCase();
 
-if (!usuario && !paginasPublicas.some(p => location.pathname.toLowerCase().includes(p))) {
-    window.location.href = "login.html";
-}
+    const paginasPublicas = ["login.html", "cadastro.html"];
+    const isPublica = paginasPublicas.some(p => paginaAtual.endsWith(p));
 
-/* =======================
-   🔹 CADASTRO
-======================= */
-const cadastroForm = document.getElementById("cadastroForm");
-
-if (cadastroForm) {
-    cadastroForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const novoUsuario = {
-            nome: document.getElementById("nome").value,
-            email: document.getElementById("email").value,
-            senha: document.getElementById("senha").value
-        };
-
-        const response = await fetch(`${API_URL}/cadastro`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(novoUsuario)
-        });
-
-        if (!response.ok) {
-            alert(await response.text());
-            return;
-        }
-
-        alert("Cadastro realizado com sucesso!");
+    if (!usuario && !isPublica) {
         window.location.href = "login.html";
-    });
-}
+        return;
+    }
 
-/* =======================
-   🔹 LOGIN
-======================= */
-const loginForm = document.getElementById("loginForm");
+    /* =======================
+       🔹 CADASTRO
+    ======================= */
+    const cadastroForm = document.getElementById("cadastroForm");
 
-if (loginForm) {
-    loginForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
+    if (cadastroForm) {
+        cadastroForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-        const credenciais = {
-            email: document.getElementById("email").value,
-            senha: document.getElementById("senha").value
-        };
+            const novoUsuario = {
+                nome: document.getElementById("nome").value,
+                email: document.getElementById("email").value,
+                senha: document.getElementById("senha").value
+            };
 
-        const response = await fetch(`${API_URL}/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(credenciais)
+            const response = await fetch(`${API_URL}/usuario/cadastro`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(novoUsuario)
+            });
+
+            if (!response.ok) {
+                alert(await response.text());
+                return;
+            }
+
+            alert("Cadastro realizado com sucesso!");
+            window.location.href = "login.html";
         });
+    }
 
-        if (!response.ok) {
-            alert("Email ou senha inválidos");
-            return;
-        }
+    /* =======================
+       🔹 LOGIN
+    ======================= */
+    const loginForm = document.getElementById("loginForm");
 
-        const user = await response.json();
-        sessionStorage.setItem("usuario", JSON.stringify(user));
+    if (loginForm) {
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-        window.location.href = "tarefas.html";
-    });
-}
+            const credenciais = {
+                email: document.getElementById("email").value,
+                senha: document.getElementById("senha").value
+            };
 
-/* =======================
-   🔹 TAREFAS
-======================= */
-const tarefaForm = document.getElementById("tarefaForm");
+            const response = await fetch(`${API_URL}/usuario/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(credenciais)
+            });
 
-if (tarefaForm && usuario) {
-    tarefaForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
+            if (!response.ok) {
+                alert("Email ou senha inválidos");
+                return;
+            }
 
-        const tarefa = {
-            titulo: document.getElementById("titulo").value,
-            prioridade: document.getElementById("prioridade").value
-        };
+            const user = await response.json();
+            sessionStorage.setItem("usuario", JSON.stringify(user));
+            window.location.href = "tarefas.html";
+        });
+    }
 
-        await fetch(`http://localhost:8081/tarefas/usuario/${usuario.id}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(tarefa)
+    /* =======================
+       🔹 PERFIL
+    ======================= */
+    const perfilNome = document.getElementById("nome");
+    const perfilEmail = document.getElementById("email");
+
+    if (perfilNome && perfilEmail && usuario) {
+        perfilNome.textContent = usuario.nome;
+        perfilEmail.textContent = usuario.email;
+    }
+
+    /* =======================
+       🔹 TAREFAS
+    ======================= */
+    const tarefaForm = document.getElementById("tarefaForm");
+    const lista = document.getElementById("listaTarefas");
+
+    if (tarefaForm && lista && usuario) {
+
+        tarefaForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const tarefa = {
+                titulo: document.getElementById("titulo").value,
+                prioridade: document.getElementById("prioridade").value
+            };
+
+            await fetch(`${API_URL}/tarefas/usuario/${usuario.id}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(tarefa)
+            });
+
+            tarefaForm.reset();
+            carregarTarefas();
         });
 
         carregarTarefas();
-        tarefaForm.reset();
-    });
-}
-async function carregarTarefas() {
-    if (!usuario) return;
+    }
 
-    const res = await fetch(`http://localhost:8081/tarefas/usuario/${usuario.id}`);
+    async function carregarTarefas() {
+        const res = await fetch(`${API_URL}/tarefas/usuario/${usuario.id}`);
+        const tarefas = await res.json();
 
-    const data = await res.json();
+        lista.innerHTML = "";
 
-    // 🛡️ GARANTIA DE ARRAY
-    const tarefas = Array.isArray(data) ? data : data.content || [];
+        tarefas.forEach(t => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <span>
+                    ${t.titulo}
+                    <span class="badge ${t.prioridade}">${t.prioridade}</span>
+                    - ${t.status}
+                </span>
+                <div>
+                    <button onclick="concluir(${t.id})">✔</button>
+                    <button onclick="excluir(${t.id})">❌</button>
+                </div>
+            `;
+            lista.appendChild(li);
+        });
+    }
+});
 
-    const lista = document.getElementById("listaTarefas");
-    lista.innerHTML = "";
-
-    tarefas.forEach(t => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-            ${t.titulo} - ${t.prioridade} - ${t.status}
-            <button onclick="concluir(${t.id})">✔</button>
-            <button onclick="excluir(${t.id})">❌</button>
-        `;
-        lista.appendChild(li);
-    });
-}
-
-
+/* =======================
+   🔹 FUNÇÕES GLOBAIS
+======================= */
 async function concluir(id) {
     await fetch(`http://localhost:8081/tarefas/${id}/concluir`, { method: "PUT" });
-    carregarTarefas();
+    location.reload();
 }
 
 async function excluir(id) {
     await fetch(`http://localhost:8081/tarefas/${id}`, { method: "DELETE" });
-    carregarTarefas();
+    location.reload();
 }
 
-/* =======================
-   🔹 LOGOUT
-======================= */
 function logout() {
     sessionStorage.clear();
     window.location.href = "login.html";
-}
-
-/* =======================
-   🔄 AUTO LOAD
-======================= */
-if (document.getElementById("listaTarefas")) {
-    carregarTarefas();
-}
-/* =======================
-   🔹 PERFIL
-======================= */
-const perfilNome = document.getElementById("nome");
-const perfilEmail = document.getElementById("email");
-
-if (perfilNome && perfilEmail) {
-    const usuario = JSON.parse(sessionStorage.getItem("usuario"));
-
-    if (!usuario) {
-        window.location.href = "login.html";
-    } else {
-        perfilNome.textContent = usuario.nome;
-        perfilEmail.textContent = usuario.email;
-    }
 }
