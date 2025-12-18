@@ -28,28 +28,15 @@
         <p><strong>Email:</strong> <span id="email"></span></p>
 
         <div class="acoes">
-            <button onclick="window.location.href='tarefas.html'" class="btn-primary">⬅ Minhas Tarefas</button>
+            <button onclick="window.location.href='tarefas.html'" class="btn-primary">
+                ⬅ Minhas Tarefas
+            </button>
         </div>
     </div>
 </div>
 
+<!-- JS GLOBAL -->
 <script src="/Resource/script.js"></script>
-
-<script>
-const usuario = JSON.parse(sessionStorage.getItem("usuario"));
-
-if (!usuario) {
-    window.location.href = "login.html";
-} else {
-    document.getElementById("nome").textContent = usuario.nome;
-    document.getElementById("email").textContent = usuario.email;
-}
-
-function logout() {
-    sessionStorage.clear();
-    window.location.href = "login.html";
-}
-</script>
 
 </body>
 </html>

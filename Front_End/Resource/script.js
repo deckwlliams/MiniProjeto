@@ -145,3 +145,19 @@ function logout() {
 if (document.getElementById("listaTarefas")) {
     carregarTarefas();
 }
+/* =======================
+   🔹 PERFIL
+======================= */
+const perfilNome = document.getElementById("nome");
+const perfilEmail = document.getElementById("email");
+
+if (perfilNome && perfilEmail) {
+    const usuario = JSON.parse(sessionStorage.getItem("usuario"));
+
+    if (!usuario) {
+        window.location.href = "login.html";
+    } else {
+        perfilNome.textContent = usuario.nome;
+        perfilEmail.textContent = usuario.email;
+    }
+}
