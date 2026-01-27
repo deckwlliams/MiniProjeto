@@ -3,7 +3,7 @@ const API_URL = "http://localhost:8081";
 document.addEventListener("DOMContentLoaded", () => {
 
     /* =======================
-       🔒 PROTEÇÃO DE ROTAS
+       PROTEÇÃO DE ROTAS
     ======================= */
     const usuario = JSON.parse(sessionStorage.getItem("usuario"));
     const paginaAtual = location.pathname.toLowerCase();
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* =======================
-       🔹 CADASTRO
+        CADASTRO
     ======================= */
     const cadastroForm = document.getElementById("cadastroForm");
 
@@ -158,4 +158,58 @@ async function excluir(id) {
 function logout() {
     sessionStorage.clear();
     window.location.href = "login.html";
+}
+/* =======================
+   🔹 EDITAR PERFIL
+======================= */
+const editarPerfilForm = document.getElementById("editarPerfilForm");
+
+if (editarPerfilForm && usuario) {
+
+    // Preenche os campos ao abrir a página
+    document.getElementById("nome").value = usuario.nome;
+    document.getElementById("email").value = usuario.email;
+
+    editarPerfilForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const senha = document.getElementById("senha").value;
+        const confirmarSenha = document.getElementById("confirmarSenha").value;
+
+        if (senha && senha !== confirmarSenha) {
+            alert("As senhas não conferem");
+            return;
+        }
+
+        const dadosAtualizados = {
+            nome: document.getElementById("nome").value
+        };
+
+        // Só envia senha se o usuário digitou
+        if (senha) {
+            dadosAtualizados.senha = senha;
+        }
+
+        const response = await fetch(
+            `${API_URL}/usuario/editar/${usuario.id}`,
+            {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dadosAtualizados)
+            }
+        );
+
+        if (!response.ok) {
+            alert(await response.text());
+            return;
+        }
+
+        const usuarioAtualizado = await response.json();
+
+        // Atualiza sessionStorage
+        sessionStorage.setItem("usuario", JSON.stringify(usuarioAtualizado));
+
+        alert("Perfil atualizado com sucesso!");
+        window.location.href = "perfil.html";
+    });
 }
